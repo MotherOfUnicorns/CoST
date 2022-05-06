@@ -48,7 +48,8 @@ if __name__ == '__main__':
     print("Dataset:", args.dataset)
     print("Arguments:", str(args))
     
-    device = init_dl_program(args.gpu, seed=args.seed, max_threads=args.max_threads)
+    # device = init_dl_program(args.gpu, seed=args.seed, max_threads=args.max_threads)
+    device = init_dl_program('cpu', seed=args.seed, max_threads=args.max_threads)
 
     if args.archive == 'forecast_csv':
         task_type = 'forecasting'

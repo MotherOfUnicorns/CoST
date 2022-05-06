@@ -115,7 +115,7 @@ class CoSTModel(nn.Module):
         logits /= self.T
 
         # labels: positive key indicators - first dim of each batch
-        labels = torch.zeros(logits.shape[0], dtype=torch.long).cuda()
+        labels = torch.zeros(logits.shape[0], dtype=torch.long).to(self.device)
         loss = F.cross_entropy(logits, labels)
 
         return loss
