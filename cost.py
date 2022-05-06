@@ -201,7 +201,7 @@ class CoST:
     def __init__(self,
                  input_dims: int,
                  kernels: List[int],
-                 alpha: bool,
+                 alpha: float,
                  max_train_length: int,
                  output_dims: int = 320,
                  hidden_dims: int = 64,
