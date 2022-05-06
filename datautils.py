@@ -31,9 +31,10 @@ def _get_time_features(dt):
     ], axis=1).astype(np.float)
 
 def load_forecast_csv(name, univar=False):
-    data = pd.read_csv(f'datasets/{name}.csv', index_col='date', parse_dates=True)
-    dt_embed = _get_time_features(data.index)
-    n_covariate_cols = dt_embed.shape[-1]
+    data = pd.read_csv(f'CoST/datasets/{name}.csv', index_col='date', parse_dates=True)
+    # dt_embed = _get_time_features(data.index)
+    # n_covariate_cols = dt_embed.shape[-1]
+    n_covariate_cols = 0
     
     if univar:
         if name in ('ETTh1', 'ETTh2', 'ETTm1', 'ETTm2'):
@@ -70,10 +71,10 @@ def load_forecast_csv(name, univar=False):
     else:
         data = np.expand_dims(data, 0)
 
-    if n_covariate_cols > 0:
-        dt_scaler = StandardScaler().fit(dt_embed[train_slice])
-        dt_embed = np.expand_dims(dt_scaler.transform(dt_embed), 0)
-        data = np.concatenate([np.repeat(dt_embed, data.shape[0], axis=0), data], axis=-1)
+    # if n_covariate_cols > 0:
+    #     dt_scaler = StandardScaler().fit(dt_embed[train_slice])
+    #     dt_embed = np.expand_dims(dt_scaler.transform(dt_embed), 0)
+    #     data = np.concatenate([np.repeat(dt_embed, data.shape[0], axis=0), data], axis=-1)
 
     if name in ('ETTh1', 'ETTh2', 'electricity', 'WTH'):
         pred_lens = [24, 48, 168, 336, 720]
