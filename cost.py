@@ -36,7 +36,8 @@ class PretrainDataset(Dataset):
         return self.data.size(0) * self.multiplier
 
     def transform(self, x):
-        return self.jitter(self.shift(self.scale(x)))
+        # return self.jitter(self.shift(self.scale(x)))
+        return self.jitter(x)
 
     def jitter(self, x):
         if random.random() > self.p:
@@ -265,7 +266,8 @@ class CoST:
         train_data = train_data[~np.isnan(train_data).all(axis=2).all(axis=1)]
 
         multiplier = 1 if train_data.shape[0] >= self.batch_size else math.ceil(self.batch_size / train_data.shape[0])
-        train_dataset = PretrainDataset(torch.from_numpy(train_data).to(torch.float), sigma=0.5, multiplier=multiplier)
+        # train_dataset = PretrainDataset(torch.from_numpy(train_data).to(torch.float), sigma=0.5, multiplier=multiplier)
+        train_dataset = PretrainDataset(torch.from_numpy(train_data).to(torch.float), p=0.9, sigma=0.001, multiplier=multiplier)
         train_loader = DataLoader(train_dataset, batch_size=min(self.batch_size, len(train_dataset)), shuffle=True, drop_last=True)
 
         optimizer = torch.optim.SGD([p for p in self.cost.parameters() if p.requires_grad],
@@ -289,6 +291,7 @@ class CoST:
                     break
 
                 x_q, x_k = map(lambda x: x.to(self.device), batch)
+                # import pudb; pu.db
                 if self.max_train_length is not None and x_q.size(1) > self.max_train_length:
                     window_offset = np.random.randint(x_q.size(1) - self.max_train_length + 1)
                     x_q = x_q[:, window_offset : window_offset + self.max_train_length]

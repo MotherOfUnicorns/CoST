@@ -1,3 +1,4 @@
+import os
 import numpy as np
 import pandas as pd
 from sklearn.preprocessing import StandardScaler, MinMaxScaler
@@ -31,7 +32,8 @@ def _get_time_features(dt):
     ], axis=1).astype(np.float)
 
 def load_forecast_csv(name, univar=False):
-    data = pd.read_csv(f'CoST/datasets/{name}.csv', index_col='date', parse_dates=True)
+    current_dir = os.path.dirname(os.path.realpath(__file__))
+    data = pd.read_csv(f'{current_dir}/datasets/{name}.csv', index_col='date', parse_dates=True)
     # dt_embed = _get_time_features(data.index)
     # n_covariate_cols = dt_embed.shape[-1]
     n_covariate_cols = 0
@@ -64,7 +66,8 @@ def load_forecast_csv(name, univar=False):
         valid_slice = slice(int(0.6 * len(data)), int(0.8 * len(data)))
         test_slice = slice(int(0.8 * len(data)), None)
     
-    scaler = StandardScaler().fit(data[train_slice])
+    # scaler = StandardScaler().fit(data[train_slice])
+    scaler = StandardScaler(with_mean=False, with_std=False).fit(data[train_slice])
     data = scaler.transform(data)
     if name in ('electricity') or name.startswith('M5'):
         data = np.expand_dims(data.T, -1)  # Each variable is an instance rather than a feature
